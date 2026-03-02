@@ -1,0 +1,9 @@
+# Корневой .gitignore проекта
+venv/
+.venv/
+env/
+ENV/
+venv_*/
+.env
+__pycache__/
+*.pyc

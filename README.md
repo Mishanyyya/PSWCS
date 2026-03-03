@@ -32,11 +32,14 @@ project/
 
 ```bash
 # 1. Клонировать репозиторий
-git clone <your-repo-url>
+git clone https://github.com/Mishanyyya/PSWCS.git
+```
 cd project-name
 
 # 2. Настроить виртуальное окружение (для своего сервиса)
+```bash
 cd services/users  # или posts/comments
-python3 -m venv venv
+python3 -m venv .venv
 source venv/bin/activate  # на Windows: venv\Scripts\activate
 pip install -r requirements.txt
+```

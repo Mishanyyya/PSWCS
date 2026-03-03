@@ -8,8 +8,8 @@
 project/
 ├── services/
 │   ├── users/              # Микросервис пользователей (порт 8001)
-│   ├── posts/              # Микросервис постов (порт 8002)
-│   └── comments/           # Микросервис комментариев (порт 8003)
+│   ├── review/              # Микросервис отзывов (порт 8002)
+│   └── univercity/           # Микросервис университетов (порт 8003)
 ├── shared/                  # Общий код
 │   ├── utils/
 ```
@@ -19,8 +19,8 @@ project/
 | Разработчик | Закрепленный сервис |
 |------------|-------------------|
 | **Mishanyyya(dev1)** | `users` | 
-| **f3n0men(dev2)** | `posts` | 
-| **DaniilYakovlev-Rbk(dev3)** | `***` |
+| **f3n0men(dev2)** | `review` | 
+| **DaniilYakovlev-Rbk(dev3)** | `university` |
 
 ## 🚀 Быстрый старт
 
@@ -34,7 +34,6 @@ project/
 # 1. Клонировать репозиторий
 git clone https://github.com/Mishanyyya/PSWCS.git
 ```
-cd project-name
 
 # 2. Настроить виртуальное окружение (для своего сервиса)
 ```bash

@@ -1,9 +1,8 @@
-from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
-
+from app.core.security import hash_password
 from app.models.user import User
 from app.schemas.user import UserCreate
-from app.core.security import hash_password
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 async def create_user(db: AsyncSession, user: UserCreate):

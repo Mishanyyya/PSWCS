@@ -1,26 +1,26 @@
-from uuid import UUID
-
 from pydantic import BaseModel, EmailStr
+from typing import Optional
 
 
+# --- CREATE ---
 class UserCreate(BaseModel):
-
     email: EmailStr
-    username: str
     password: str
+    full_name: Optional[str] = None
 
 
+# --- LOGIN ---
 class UserLogin(BaseModel):
-
     email: EmailStr
     password: str
 
 
+# --- RESPONSE ---
 class UserResponse(BaseModel):
-
-    id: UUID
+    id: int
     email: EmailStr
-    username: str
+    role: str
+    full_name: Optional[str] = None
 
     class Config:
         from_attributes = True

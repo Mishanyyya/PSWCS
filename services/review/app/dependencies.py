@@ -1,3 +1,4 @@
+# services/reviews/app/dependencies.py
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -8,7 +9,7 @@ from app.clients.user_client import user_client
 
 security = HTTPBearer()
 
-async def get_db() -> AsyncSession:
+async def get_db() -> AsyncGenerator[AsyncSession, None]:
     """Зависимость для получения сессии БД"""
     async for session in get_session():
         yield session
@@ -29,8 +30,8 @@ async def get_current_user(
             headers={"WWW-Authenticate": "Bearer"},
         )
     
-
     return user_data
+
 async def get_current_admin(
     current_user: dict = Depends(get_current_user)
 ) -> dict:

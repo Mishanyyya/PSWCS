@@ -3,6 +3,7 @@ from app.database import engine
 from app import models
 from app.routers import reviews, moderation
 from dotenv import load_dotenv
+from app.config import settings
 
 load_dotenv()
 app = FastAPI(
@@ -18,4 +19,4 @@ app.include_router(moderation.router)
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8002)
+    uvicorn.run(app, host="0.0.0.0", port = settings.SERVICE_PORT)

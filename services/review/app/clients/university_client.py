@@ -1,14 +1,16 @@
+# services/reviews/app/clients/university_client.py
 import httpx
-import os
 from uuid import UUID
-from typing import Optional, Dict
+from typing import Optional
+
+from app.config import settings
 
 class UniversityClient:
     """Клиент для общения с University service"""
     
     def __init__(self):
-        self.base_url = os.getenv("UNIVERSITY_SERVICE_URL", "http://university-service:8003")
-        self.timeout = 10.0
+        self.base_url = settings.UNIVERSITY_SERVICE_URL
+        self.timeout = settings.REQUEST_TIMEOUT
     
     async def check_university_exists(self, university_id: UUID) -> bool:
         """
@@ -24,10 +26,10 @@ class UniversityClient:
                 print(f"Error checking university: {e}")
                 return False
     
-    async def update_stats(self, university_id: UUID, rating: int, action: str = "add"):
+    async def update_stats(self, university_id: UUID, rating: int, action: str = "approve"):
         """
         Уведомляет University service о новом отзыве для обновления статистики
-        action: "add" - добавить отзыв, "update" - обновить, "delete" - удалить
+        action: "approve" - добавить отзыв, "delete" - удалить, "update" - обновить
         """
         async with httpx.AsyncClient(timeout=self.timeout) as client:
             try:

@@ -9,26 +9,19 @@ sys.path.append(str(Path(__file__).parent.parent))
 from seeds.seeder_review import ReviewSeeder
 from app.database import engine, AsyncSessionLocal
 
-async def run_seeder(seed_type: str = "basic", count: int = 50):
-    """Запуск seeder'а с параметрами"""
+async def run_seeder(count: int = 5):
     
-    print(f"Запуск {seed_type} seeder'а с {count} отзывами...")
-    
-    if seed_type == "basic":
-        seeder = ReviewSeeder(engine, AsyncSessionLocal)
-    else:
-        print(f"Неизвестный тип: {seed_type}")
-        return
+    seeder = ReviewSeeder(engine, AsyncSessionLocal)
     
     await seeder.seed(count=count)
     print("Готово!")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Seeder для отзывов")
-    parser.add_argument("--count", type=int, default=10, help="Количество отзывов")
+    parser.add_argument("--count", type=int, default=5, help="Количество отзывов")
     parser.add_argument("--type", choices=["basic", "advanced"], default="basic", 
                        help="Тип seeder'а")
     
     args = parser.parse_args()
     
-    asyncio.run(run_seeder(args.type, args.count))
+    asyncio.run(run_seeder(args.count))

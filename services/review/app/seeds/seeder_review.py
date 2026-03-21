@@ -5,7 +5,7 @@ import random
 from datetime import datetime, timedelta
 from faker import Faker
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
-
+from sqlalchemy import text, select
 import sys
 from pathlib import Path
 
@@ -15,13 +15,8 @@ sys.path.append(str(Path(__file__).parent.parent.parent))
 from app.database import Base
 from app.models import Review, ModerationLog
 
-# Настройки - берем из database.py или прописываем здесь
 DATABASE_URL = "postgresql+asyncpg://postgres:pass@localhost:5432/review_db"
-
-# Возможные статусы
 STATUSES = ["pending", "approved", "rejected"]
-
-# Возможные действия модерации
 MODERATION_ACTIONS = ["approve", "reject", "flag"]
 
 class ReviewSeeder:
@@ -37,7 +32,6 @@ class ReviewSeeder:
             uuid.UUID('55555555-5555-5555-5555-555555555555'),
         ]
         
-        # Генерируем больше авторов
         self.author_ids = [
             uuid.UUID('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'),
             uuid.UUID('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb'),
@@ -88,7 +82,6 @@ class ReviewSeeder:
         created_at = self.fake.date_time_between(start_date='-180d', end_date='now')
         updated_at = created_at + timedelta(days=random.randint(0, 30))
         
-        # Генерация рейтинга (1-5) с разными весами
         rating = random.choices([1, 2, 3, 4, 5], weights=[0.1, 0.15, 0.25, 0.3, 0.2])[0]
         
         # Генерация заголовка в зависимости от рейтинга
@@ -108,7 +101,6 @@ class ReviewSeeder:
         else:
             body = self.fake.paragraph(nb_sentences=5)
         
-        # Статус (с большей вероятностью approved)
         status = random.choices(STATUSES, weights=[0.2, 0.7, 0.1])[0]
         
         return Review(
@@ -116,7 +108,7 @@ class ReviewSeeder:
             university_id=university_id,
             author_id=author_id,
             rating=rating,
-            title=title[:255],  # Ограничение длины
+            title=title[:255],  
             body=body,
             status=status,
             is_anonymous=random.choice([True, False]),
@@ -131,13 +123,11 @@ class ReviewSeeder:
         if status == "pending":
             return None
         
-        # Генерируем лог с вероятностью 0.7
+        # с вероятностью 0.7
         if random.random() > 0.7:
             return None
         
         action = "approve" if status == "approved" else "reject"
-        
-        # Причины для отклонения
         rejection_reasons = [
             "Содержит нецензурную лексику",
             "Оскорбления в адрес университета",
@@ -164,63 +154,36 @@ class ReviewSeeder:
             created_at=log_created_at
         )
     
-    async def seed(self, count: int = 50):
-        """Заполнение БД тестовыми данными"""
-        
-        # Сбрасываем использованные комбинации при каждом запуске
-        self.used_combinations.clear()
-        
+    async def seed(self, count: int = 5):
         async with self.session_maker() as session:
-            # Генерация отзывов
+            # Загружаем существующие пары из БД
+            result = await session.execute(
+                select(Review.university_id, Review.author_id)
+            )
+            existing_pairs = {(row[0], row[1]) for row in result.fetchall()}
+            # Используем их для исключения дубликатов
+            self.used_combinations = existing_pairs
+
+            # Генерация новых отзывов
             reviews = []
             for i in range(count):
-                try:
-                    review = self.generate_review(i)
-                    reviews.append(review)
-                    
-                    if (i + 1) % 10 == 0:
-                        print(f"Сгенерировано {i + 1} отзывов...")
-                except Exception as e:
-                    print(f"Ошибка при генерации отзыва {i+1}: {e}")
-                    continue
-            
-            # Добавляем отзывы в сессию
+                review = self.generate_review(i)
+                reviews.append(review)
+
             session.add_all(reviews)
-            await session.flush()  # Чтобы получить ID отзывов
-            
-            # Генерация логов модерации для некоторых отзывов
-            logs = []
-            for review in reviews:
-                log = self.generate_moderation_log(review.id, review.created_at, review.status)
-                if log:
-                    logs.append(log)
-            
-            # Добавляем логи
-            if logs:
-                session.add_all(logs)
-                print(f"Сгенерировано {len(logs)} логов модерации")
-            
-            # Коммитим изменения
             await session.commit()
-            print(f"Успешно добавлено {len(reviews)} отзывов в БД")
+            print(f"Успешно добавлено {len(reviews)} отзывов")
 
 
-
-# Если нужно запустить напрямую
 async def main():
     engine = create_async_engine(DATABASE_URL, echo=True)
     session_maker = async_sessionmaker(engine, expire_on_commit=False)
     
     try:
-        # Создаем таблицы (если нужно)
-        async with engine.begin() as conn:
-            await conn.run_sync(Base.metadata.create_all)
-        
-        # Создаем и запускаем seeder
+
         seeder = ReviewSeeder(engine, session_maker)
-        
-        # Генерируем 50 отзывов
-        await seeder.seed(count=50)
+
+        await seeder.seed(count=5)
         
     finally:
         await engine.dispose()

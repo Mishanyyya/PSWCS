@@ -1,9 +1,11 @@
+from typing import Optional
+
+from app.core.config import settings
 from app.core.security import hash_password
 from app.models.user import User
 from app.schemas.user import UserCreate
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import Optional
 
 
 async def create_user(db: AsyncSession, user: UserCreate) -> User:
@@ -14,7 +16,7 @@ async def create_user(db: AsyncSession, user: UserCreate) -> User:
         email=user.email,
         full_name=user.full_name,
         hashed_password=hash_password(user.password),
-        role="user"  # роль по умолчанию
+        role=settings.DEFAULT_USER_ROLE,
     )
 
     db.add(new_user)

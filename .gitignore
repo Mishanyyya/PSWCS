@@ -7,4 +7,5 @@ venv_*/
 .env
 __pycache__/
 *.pyc
+*.log
 .coms

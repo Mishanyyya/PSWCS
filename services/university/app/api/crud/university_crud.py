@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from models.university_model import University
 from api.schemas.university_schema import UniversityBase
-from errors.exceptions import UniversityAlreadyExistsException
+from errors.exceptions import UniversityAlreadyExistsException, InvalidReviewsCountException
 from logger.logger import logger
 
 async def create_university(session: AsyncSession, uni_data: UniversityBase):
@@ -48,7 +48,7 @@ async def get_university_by_id(session: AsyncSession, uni_id: int):
     )
     return result.scalar_one_or_none()
 
-async def update_university_statistics(session: AsyncSession, uni_id: int, new_score: float):
+async def update_university_statistics(session: AsyncSession, uni_id: int, score: float, action: str):
     query = select(University).where(University.id == uni_id)
     result = await session.execute(query)
     university = result.scalar_one_or_none()
@@ -57,10 +57,26 @@ async def update_university_statistics(session: AsyncSession, uni_id: int, new_s
         return None
 
     current_total_score = university.rating * university.reviews_count
-    new_reviews_count = university.reviews_count + 1
-    new_average_rating = (current_total_score + new_score) / new_reviews_count
+    
+    if action == "approve":
+        new_reviews_count = university.reviews_count + 1
+        new_total_score = current_total_score + score
+    else:
+        if university.reviews_count <= 0:
+            logger.warning(f"Попытка уменьшить количество отзывов ниже 0 для ВУЗа {uni_id}")
+            raise InvalidReviewsCountException()
 
-    final_rating = max(1.0, min(5.0, new_average_rating))
+        new_reviews_count = university.reviews_count - 1
+        new_total_score = current_total_score - score
+        
+        if new_total_score < 0:
+            new_total_score = 0
+
+    if new_reviews_count > 0:
+        new_average_rating = new_total_score / new_reviews_count
+        final_rating = max(1.0, min(5.0, new_average_rating))
+    else:
+        final_rating = 0.0
 
     university.rating = round(final_rating, 2)
     university.reviews_count = new_reviews_count
@@ -68,5 +84,19 @@ async def update_university_statistics(session: AsyncSession, uni_id: int, new_s
     await session.commit()
     await session.refresh(university)
     
-    logger.info(f"Обновлена статистика для ВУЗа {uni_id}: рейтинг {university.rating}, отзывов {university.reviews_count}")
+    logger.info(f"Статистика ВУЗа {uni_id} изменена ({action}): рейтинг {university.rating}, отзывов {university.reviews_count}")
     return university
+
+async def delete_university(session: AsyncSession, uni_id: int) -> bool:
+    query = select(University).where(University.id == uni_id)
+    result = await session.execute(query)
+    university = result.scalar_one_or_none()
+
+    if not university:
+        logger.warning(f"Попытка удаления несуществующего ВУЗа с ID: {uni_id}")
+        return False
+
+    await session.delete(university)
+    await session.commit()
+    logger.info(f"ВУЗ с ID {uni_id} успешно удален")
+    return True

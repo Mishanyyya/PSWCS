@@ -1,4 +1,6 @@
+import uuid
 from sqlalchemy import Integer, String, Float, Text, Boolean
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy.ext.asyncio import AsyncAttrs
 

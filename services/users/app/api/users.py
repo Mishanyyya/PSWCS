@@ -1,21 +1,23 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Header
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
-from typing import List, Optional
-from jose import jwt, JWTError
+from typing import AsyncGenerator, List, Optional
 
+from app.core.config import settings
+from app.core.security import create_access_token, hash_password, verify_password
 from app.db.session import AsyncSessionLocal
 from app.models.user import User
-from app.schemas.user import UserCreate, UserResponse, UserLogin
-from app.core.security import hash_password, verify_password, create_access_token
-from app.core.config import settings
+from app.schemas.user import UserCreate, UserLogin, UserResponse
 from app.services.user_service import create_user, get_user_by_email
+from fastapi import APIRouter, Depends, Header, HTTPException, status
+from jose import JWTError, jwt
+from jose.exceptions import ExpiredSignatureError
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+
 
 router = APIRouter()
 
 
 # --- Dependency ---
-async def get_db() -> AsyncSession:
+async def get_db() -> AsyncGenerator[AsyncSession, None]:
     async with AsyncSessionLocal() as session:
         yield session
 
@@ -62,25 +64,25 @@ async def validate_token(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Authorization header missing"
         )
-    
+
     # Проверяем формат заголовка
     if not authorization.startswith("Bearer "):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid authorization header format. Expected 'Bearer <token>'"
         )
-    
+
     # Извлекаем токен
     token = authorization.replace("Bearer ", "")
-    
+
     try:
         # Декодируем и проверяем токен
         payload = jwt.decode(
             token,
             settings.JWT_SECRET,
-            algorithms=["HS256"]
+            algorithms=[settings.JWT_ALGORITHM]
         )
-        
+
         # Извлекаем user_id из токена
         user_id = payload.get("sub")
         if not user_id:
@@ -88,17 +90,17 @@ async def validate_token(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Token missing user ID"
             )
-        
+
         # Проверяем что пользователь всё ещё существует в БД
         result = await db.execute(select(User).where(User.id == int(user_id)))
         user = result.scalar_one_or_none()
-        
+
         if not user:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="User not found or deactivated"
             )
-        
+
         # Возвращаем информацию о пользователе для других сервисов
         return {
             "valid": True,
@@ -108,24 +110,24 @@ async def validate_token(
             "full_name": user.full_name,
             "expires_at": payload.get("exp")
         }
-        
-    except jwt.ExpiredSignatureError:
+
+    except ExpiredSignatureError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Token has expired"
         )
-    except JWTError as e:
+    except JWTError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=f"Invalid token: {str(e)}"
+            detail="Invalid token"
         )
 
 
 # --- READ all users ---
 @router.get("/", response_model=List[UserResponse])
 async def read_users(
-    skip: int = 0, 
-    limit: int = 100, 
+    skip: int = 0,
+    limit: int = 100,
     db: AsyncSession = Depends(get_db)
 ):
     result = await db.execute(
@@ -142,7 +144,7 @@ async def read_user(user_id: int, db: AsyncSession = Depends(get_db)):
     user = result.scalar_one_or_none()
     if not user:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, 
+            status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found"
         )
     return user
@@ -151,15 +153,15 @@ async def read_user(user_id: int, db: AsyncSession = Depends(get_db)):
 # --- UPDATE user ---
 @router.put("/{user_id}", response_model=UserResponse)
 async def update_user(
-    user_id: int, 
-    updated_user: UserCreate, 
+    user_id: int,
+    updated_user: UserCreate,
     db: AsyncSession = Depends(get_db)
 ):
     result = await db.execute(select(User).where(User.id == user_id))
     user = result.scalar_one_or_none()
     if not user:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, 
+            status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found"
         )
 
@@ -174,10 +176,10 @@ async def update_user(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Email already registered"
             )
-    
+
     user.email = updated_user.email
     user.full_name = updated_user.full_name
-    
+
     # Обновляем пароль только если он предоставлен
     if updated_user.password:
         user.hashed_password = hash_password(updated_user.password)
@@ -195,7 +197,7 @@ async def delete_user(user_id: int, db: AsyncSession = Depends(get_db)):
     user = result.scalar_one_or_none()
     if not user:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, 
+            status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found"
         )
 

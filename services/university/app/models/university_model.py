@@ -10,7 +10,7 @@ class Base(AsyncAttrs, DeclarativeBase):
 class University(Base):
     __tablename__ = 'universities'
     
-    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(255))
     city: Mapped[str] = mapped_column(String(100)) 
     description: Mapped[str] = mapped_column(Text, nullable=True)

@@ -26,6 +26,11 @@ class UniversityRatingUpdate(BaseModel):
         le=5.0, 
         description="Оценка от пользователя должна быть строго в диапазоне [1, 5]"
     )
+    action: str = Field(
+        ..., 
+        pattern="^(approve|delete)$", 
+        description="Действие: approve (добавить) или delete (убрать оценку)"
+    )
 
 class UniversityUpdate(BaseModel):
     name: Optional[str] = None

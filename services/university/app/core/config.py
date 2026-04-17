@@ -1,5 +1,10 @@
 from pydantic import computed_field
 from pydantic_settings import BaseSettings, SettingsConfigDict
+import os
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+ENV_PATH = os.path.join(BASE_DIR, ".env")
 
 class Settings(BaseSettings):
     LOG_LEVEL: str = "INFO"
@@ -8,6 +13,7 @@ class Settings(BaseSettings):
     POSTGRES_SERVER: str
     POSTGRES_PORT: int
     POSTGRES_DB: str
+    VALIDATION_URL: str
 
     @computed_field
     @property
@@ -20,7 +26,7 @@ class Settings(BaseSettings):
         )
 
     model_config = SettingsConfigDict(
-        env_file=".env", 
+        env_file=ENV_PATH, 
         env_file_encoding="utf-8",
         extra="ignore" 
     )

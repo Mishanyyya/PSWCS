@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, status
+from api.dependencies.auth import get_current_user, role_required
 from sqlalchemy.ext.asyncio import AsyncSession
 from db.database import get_async_session
 from api.schemas.university_schema import (
@@ -22,9 +23,10 @@ async def get_universities(
     city: str | None = None,
     min_rating: float | None = None,
     has_dormitory: bool | None = None,
-    session: AsyncSession = Depends(get_async_session)
+    session: AsyncSession = Depends(get_async_session),
+    user: dict = Depends(get_current_user)
 ):
-    logger.info(f"Запрос на список ВУЗов: city={city}, min_rating={min_rating}, dorm={has_dormitory}")
+    logger.info(f"Запрос на список ВУЗов от пользователя {user['email']}: city={city}, min_rating={min_rating}, dorm={has_dormitory}")
     return await university_crud.get_all_universities(
         session, 
         city=city, 
@@ -38,8 +40,12 @@ async def get_universities(
     status_code=status.HTTP_200_OK,
     summary="Получить ВУЗ по ID"
 )
-async def get_university(uni_id: int, session: AsyncSession = Depends(get_async_session)):
-    logger.info(f"Запрос данных ВУЗа с ID: {uni_id}")
+async def get_university(
+    uni_id: int, 
+    session: AsyncSession = Depends(get_async_session),
+    user: dict = Depends(get_current_user)
+):
+    logger.info(f"Запрос данных ВУЗа от пользователя {user['email']} с ID: {uni_id}")
     db_university = await university_crud.get_university_by_id(session, uni_id)
     
     if db_university is None:
@@ -53,33 +59,63 @@ async def get_university(uni_id: int, session: AsyncSession = Depends(get_async_
     "/universities/", 
     response_model=UniversityRead,
     status_code=status.HTTP_201_CREATED,
-    summary="Добавить новый ВУЗ"
+    summary="Добавить новый ВУЗ",
 )
 async def add_university(
     uni: UniversityCreate, 
-    session: AsyncSession = Depends(get_async_session)
+    session: AsyncSession = Depends(get_async_session),
+    admin_user: dict = Depends(role_required(["admin"]))
 ):
-    logger.info(f"Запрос на создание ВУЗа: {uni.name}")
+    logger.info(f"Админ {admin_user['email']} создает ВУЗ: {uni.name}")
     return await university_crud.create_university(session, uni)
 
 @router.patch(
     "/universities/{uni_id}/update-rating",
     response_model=UniversityRead,
+    status_code=status.HTTP_200_OK,
     summary="Обновить статистику рейтинга (внутренний эндпоинт)"
+)
+@router.patch(
+    "/universities/{uni_id}/update-rating",
+    response_model=UniversityRead,
+    status_code=status.HTTP_200_OK,
+    summary="Обновить статистику рейтинга (approve/delete)"
 )
 async def update_rating(
     uni_id: int, 
     update_data: UniversityRatingUpdate, 
-    session: AsyncSession = Depends(get_async_session)
+    session: AsyncSession = Depends(get_async_session),
+    admin_user: dict = Depends(role_required(["admin"]))
 ):
-    logger.info(f"Обновление рейтинга ВУЗа {uni_id}. Новая оценка: {update_data.new_score}")
-    
+    logger.info(f"Админ {admin_user['email']} запрашивает {update_data.action} для ВУЗа {uni_id}. Оценка: {update_data.new_score}")
+
     db_university = await university_crud.update_university_statistics(
-        session, uni_id, update_data.new_score
+        session, 
+        uni_id, 
+        update_data.new_score, 
+        update_data.action
     )
 
     if db_university is None:
-        logger.warning(f"ВУЗ {uni_id} не найден для обновления рейтинга")
         raise UniversityNotFoundException()
         
     return db_university
+
+@router.delete(
+    "/universities/{uni_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    summary="Удалить ВУЗ"
+)
+async def delete_university(
+    uni_id: int,
+    session: AsyncSession = Depends(get_async_session),
+    admin_user: dict = Depends(role_required(["admin"]))
+):
+    logger.info(f"Админ {admin_user['email']} инициировал удаление ВУЗа ID: {uni_id}")
+    
+    success = await university_crud.delete_university(session, uni_id)
+    
+    if not success:
+        raise UniversityNotFoundException()
+        
+    return None 

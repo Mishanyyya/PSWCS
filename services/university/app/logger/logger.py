@@ -1,7 +1,9 @@
 import logging
 import sys
 from pathlib import Path
+
 from core.config import settings
+
 
 LOG_DIR = Path(__file__).parent
 LOG_FILE = LOG_DIR / "app.log"

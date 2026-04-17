@@ -1,5 +1,6 @@
 from fastapi import HTTPException, status
 
+
 class UniversityAlreadyExistsException(HTTPException):
     def __init__(self):
         super().__init__(
@@ -13,7 +14,7 @@ class UniversityNotFoundException(HTTPException):
             status_code=status.HTTP_404_NOT_FOUND,
             detail="ВУЗ не найден"
         )
-        
+
 class InvalidReviewsCountException(HTTPException):
     def __init__(self):
         super().__init__(

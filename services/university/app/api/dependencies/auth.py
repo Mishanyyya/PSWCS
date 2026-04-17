@@ -1,25 +1,26 @@
 import httpx
-from fastapi import Depends, HTTPException, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from core.config import settings
+from fastapi import Depends, HTTPException, status
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+
 
 security = HTTPBearer()
 
 async def get_current_user(auth: HTTPAuthorizationCredentials = Depends(security)):
     token = auth.credentials
     url = settings.VALIDATION_URL
-    
+
     async with httpx.AsyncClient() as client:
         try:
             response = await client.get(
-                url, 
+                url,
                 headers={"Authorization": f"Bearer {token}"},
                 timeout=5.0
             )
-            
+
             if response.status_code == 200:
                 return response.json()
-            
+
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Неверный токен или токен истек"

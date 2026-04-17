@@ -1,12 +1,11 @@
 import asyncio
 import logging
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
 
-from core.config import settings
-from db.database import get_async_session, engine
+from db.database import engine
 from models.university_model import University
-from api.schemas.university_schema import UniversityCreate
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("db_seeder")
@@ -43,7 +42,7 @@ UNIVERSITIES_DATA = [
 
 async def seed_data():
     logger.info("Начало процесса наполнения БД...")
-    
+
     from sqlalchemy.orm import sessionmaker
     async_session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
@@ -59,7 +58,7 @@ async def seed_data():
             logger.info(f"Добавление ВУЗа: {uni_data['name']}")
 
         await session.commit()
-    
+
     logger.info("Наполнение БД завершено успешно!")
 
 if __name__ == "__main__":

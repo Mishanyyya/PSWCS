@@ -1,5 +1,7 @@
-from pydantic import BaseModel, Field
 from typing import Optional
+
+from pydantic import BaseModel, Field
+
 
 class UniversityBase(BaseModel):
     name: str = Field(..., min_length=2, max_length=255, description="Название ВУЗа")
@@ -21,14 +23,14 @@ class UniversityRead(UniversityBase):
 
 class UniversityRatingUpdate(BaseModel):
     new_score: float = Field(
-        ..., 
-        ge=1.0, 
-        le=5.0, 
+        ...,
+        ge=1.0,
+        le=5.0,
         description="Оценка от пользователя должна быть строго в диапазоне [1, 5]"
     )
     action: str = Field(
-        ..., 
-        pattern="^(approve|delete)$", 
+        ...,
+        pattern="^(approve|delete)$",
         description="Действие: approve (добавить) или delete (убрать оценку)"
     )
 

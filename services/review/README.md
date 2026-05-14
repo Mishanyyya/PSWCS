@@ -31,21 +31,93 @@ make seed
 # Запустить сервис
 make run         
 ```
+---
+ 
+## Запуск через Docker (весь проект)
+ 
+```bash
+# Из корня репозитория
+docker-compose up --build
+ 
+# Остановить
+docker-compose down
+ 
+# Остановить и удалить данные БД
+docker-compose down -v
+```
+ 
+Сервисы после запуска:
+- http://localhost:8001 — User service
+- http://localhost:8002 — Review service
+- http://localhost:8003 — University service
+---
+ 
+## Тесты
+ 
+```bash
+pip install pytest pytest-asyncio httpx aiosqlite
+ 
+pytest tests/ -v                        # все тесты
+pytest tests/test_reviews.py -v         # только отзывы
+pytest tests/test_moderation.py -v      # только модерация
+pytest tests/test_clients.py -v         # только клиенты
+```
+ ## Примеры запросов
+ 
+### Получить отзывы университета
+ 
+```bash
+curl http://localhost:8002/api/v1/reviews/university/1
+```
+```json
+{
+  "data": [{"id": 1, "university_id": 1, "rating": 4, "status": "approved", ...}],
+  "total": 1, "page": 1, "page_size": 10
+}
+```
+ 
+### Создать отзыв
+ 
+```bash
+curl -X POST http://localhost:8002/api/v1/reviews/ \
+  -H "Authorization: Bearer <токен>" \
+  -H "Content-Type: application/json" \
+  -d '{"university_id": 1, "rating": 4, "title": "Хороший вуз",
+       "body": "Учился четыре года, доволен качеством образования.", "is_anonymous": false}'
+```
+```json
+{"id": 1, "status": "pending", ...}
+```
+ 
 
-## Структура
+
+---
+ 
+## Структура проекта
+ 
 ```
 services/review/
 ├── app/
-│   ├── main.py
+│   ├── clients/
+│   │   ├── university_client.py
+│   │   └── user_client.py
+│   ├── routers/
+│   │   ├── reviews.py
+│   │   └── moderation.py
 │   ├── config.py
 │   ├── database.py
-│   ├── models.py
-│   ├── schemas.py
 │   ├── dependencies.py
-│   ├── clients/          
-│   ├── routers/          
-│   └── seeds/           
-├── .env.example
-├── requirements.txt
-├── Makefile
-└── README.md
+│   ├── main.py
+│   ├── models.py
+│   └── schemas.py
+├── migrations/
+├── tests/
+│   ├── conftest.py
+│   ├── test_reviews.py
+│   ├── test_moderation.py
+│   └── test_clients.py
+├── .env
+├── alembic.ini
+├── Dockerfile
+└── requirements.txt
+```

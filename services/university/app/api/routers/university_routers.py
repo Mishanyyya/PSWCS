@@ -1,14 +1,14 @@
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from db.database import get_async_session
-from api.schemas.university_schema import (
+from app.db.database import get_async_session
+from app.api.schemas.university_schema import (
     UniversityRead, 
     UniversityCreate, 
     UniversityRatingUpdate
 )
-import api.crud.university_crud as university_crud
-from errors.exceptions import UniversityNotFoundException
-from logger.logger import logger
+import app.api.crud.university_crud as university_crud
+from app.errors.exceptions import UniversityNotFoundException
+from app.logger.logger import logger
 
 router = APIRouter(tags=["Universities"])
 
@@ -62,6 +62,7 @@ async def add_university(
     logger.info(f"Запрос на создание ВУЗа: {uni.name}")
     return await university_crud.create_university(session, uni)
 
+# app/api/routers/university_routers.py
 @router.patch(
     "/universities/{uni_id}/update-rating",
     response_model=UniversityRead,
@@ -72,10 +73,14 @@ async def update_rating(
     update_data: UniversityRatingUpdate, 
     session: AsyncSession = Depends(get_async_session)
 ):
-    logger.info(f"Обновление рейтинга ВУЗа {uni_id}. Новая оценка: {update_data.new_score}")
+    logger.info(f"Обновление рейтинга ВУЗа {uni_id}. "
+                f"Оценка: {update_data.new_score}, action: {update_data.action}")
     
     db_university = await university_crud.update_university_statistics(
-        session, uni_id, update_data.new_score
+        session, 
+        uni_id, 
+        update_data.new_score,
+        update_data.action  # передаем action
     )
 
     if db_university is None:

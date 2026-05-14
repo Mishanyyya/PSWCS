@@ -1,19 +1,17 @@
-import uuid
 from datetime import datetime
-from sqlalchemy import String, SmallInteger, Boolean, Text, ForeignKey, DateTime, UniqueConstraint
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, SmallInteger, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
 from app.database import Base
+
 
 class Review(Base):
     __tablename__ = "reviews"
-    __table_args__ = (
-        UniqueConstraint("university_id", "author_id"),
-    )
+    __table_args__ = (UniqueConstraint("university_id", "author_id"),)
 
-    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    university_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False, index=True)
-    author_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False, index=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)  # Integer
+    university_id: Mapped[int] = mapped_column(Integer, nullable=False, index=True)  # Integer
+    author_id: Mapped[int] = mapped_column(Integer, nullable=False, index=True)  # Integer
     rating: Mapped[int] = mapped_column(SmallInteger, nullable=False)
     title: Mapped[str] = mapped_column(String(255), nullable=False)
     body: Mapped[str] = mapped_column(Text, nullable=False)
@@ -28,11 +26,15 @@ class Review(Base):
 class ModerationLog(Base):
     __tablename__ = "moderation_logs"
 
-    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    review_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("reviews.id", ondelete="CASCADE"), nullable=False, index=True)
-    moderator_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    review_id: Mapped[int] = mapped_column(
+        Integer, 
+        ForeignKey("reviews.id", ondelete="CASCADE"), 
+        nullable=False
+    )
+    moderator_id: Mapped[int] = mapped_column(Integer, nullable=False)
     action: Mapped[str] = mapped_column(String(20), nullable=False)
-    reason: Mapped[str | None] = mapped_column(Text)
+    reason: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     review: Mapped["Review"] = relationship(back_populates="logs")

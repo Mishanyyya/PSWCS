@@ -1,9 +1,9 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from models.university_model import University
-from api.schemas.university_schema import UniversityBase
-from errors.exceptions import UniversityAlreadyExistsException
-from logger.logger import logger
+from app.models.university_model import University
+from app.api.schemas.university_schema import UniversityBase
+from app.errors.exceptions import UniversityAlreadyExistsException
+from app.logger.logger import logger
 
 async def create_university(session: AsyncSession, uni_data: UniversityBase):
     query = select(University).where(University.name == uni_data.name)
@@ -48,7 +48,12 @@ async def get_university_by_id(session: AsyncSession, uni_id: int):
     )
     return result.scalar_one_or_none()
 
-async def update_university_statistics(session: AsyncSession, uni_id: int, new_score: float):
+async def update_university_statistics(
+    session: AsyncSession, 
+    uni_id: int, 
+    new_score: float,
+    action: str = "approve"
+):
     query = select(University).where(University.id == uni_id)
     result = await session.execute(query)
     university = result.scalar_one_or_none()
@@ -56,11 +61,32 @@ async def update_university_statistics(session: AsyncSession, uni_id: int, new_s
     if not university:
         return None
 
-    current_total_score = university.rating * university.reviews_count
-    new_reviews_count = university.reviews_count + 1
-    new_average_rating = (current_total_score + new_score) / new_reviews_count
+    if action == "approve":
+        # Добавляем новый отзыв
+        current_total_score = university.rating * university.reviews_count
+        new_reviews_count = university.reviews_count + 1
+        new_average_rating = (current_total_score + new_score) / new_reviews_count
+        
+    elif action == "delete":
+        # Удаляем существующий отзыв
+        if university.reviews_count <= 1:
+            new_reviews_count = 0
+            new_average_rating = 0
+        else:
+            current_total_score = university.rating * university.reviews_count
+            new_reviews_count = university.reviews_count - 1
+            new_average_rating = (current_total_score - new_score) / new_reviews_count
+        
+    
+    else:
+        # По умолчанию - approve
+        current_total_score = university.rating * university.reviews_count
+        new_reviews_count = university.reviews_count + 1
+        new_average_rating = (current_total_score + new_score) / new_reviews_count
 
-    final_rating = max(1.0, min(5.0, new_average_rating))
+    if new_reviews_count == 0:
+        final_rating = 0  # Нет отзывов - рейтинг 0
+    else: final_rating = max(1.0, min(5.0, new_average_rating))
 
     university.rating = round(final_rating, 2)
     university.reviews_count = new_reviews_count
@@ -68,5 +94,6 @@ async def update_university_statistics(session: AsyncSession, uni_id: int, new_s
     await session.commit()
     await session.refresh(university)
     
-    logger.info(f"Обновлена статистика для ВУЗа {uni_id}: рейтинг {university.rating}, отзывов {university.reviews_count}")
+    logger.info(f"Обновлена статистика для ВУЗа {uni_id}: action={action}, "
+                f"рейтинг {university.rating}, отзывов {university.reviews_count}")
     return university

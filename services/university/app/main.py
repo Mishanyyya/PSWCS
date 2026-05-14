@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 import uvicorn
-from api.routers.university_routers import router as university_router  
-from logger.logger import logger
+from app.api.routers.university_routers import router as university_router  
+from app.logger.logger import logger
 
 def get_application() -> FastAPI:
     application = FastAPI(title="University service")

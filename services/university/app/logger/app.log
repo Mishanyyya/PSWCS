@@ -5,3 +5,140 @@
 2026-03-17 17:34:25,405 - university_service - INFO - Получен запрос на добавление нового ВУЗа: МИЭТ
 2026-03-17 17:34:25,712 - university_service - INFO - Новый ВУЗ успешно добавлен: МИЭТ
 2026-03-17 17:34:34,059 - university_service - INFO - Получен запрос на получение списка ВУЗов
+2026-04-15 16:59:57,980 - university_service - INFO - Запрос на создание ВУЗа: u1
+2026-04-15 17:09:15,260 - university_service - INFO - Запрос на создание ВУЗа: miet
+2026-04-15 17:09:15,507 - university_service - INFO - Новый ВУЗ успешно добавлен: miet
+2026-04-15 23:13:41,261 - university_service - INFO - Запрос данных ВУЗа с ID: 1
+2026-04-15 23:14:02,125 - university_service - INFO - Обновление рейтинга ВУЗа 0. Новая оценка: 1.0
+2026-04-15 23:14:02,148 - university_service - WARNING - ВУЗ 0 не найден для обновления рейтинга
+2026-04-15 23:14:12,022 - university_service - INFO - Обновление рейтинга ВУЗа 1. Новая оценка: 1.0
+2026-04-15 23:14:12,063 - university_service - INFO - Обновлена статистика для ВУЗа 1: рейтинг 1.0, отзывов 1
+2026-04-15 23:14:54,801 - university_service - INFO - Запрос данных ВУЗа с ID: 1
+2026-04-16 12:16:04,096 - university_service - INFO - Запрос данных ВУЗа с ID: 999
+2026-04-16 12:16:04,339 - university_service - WARNING - ВУЗ с ID 999 не найден
+2026-04-16 12:16:32,950 - university_service - INFO - Запрос на создание ВУЗа: baumanka
+2026-04-16 12:16:32,998 - university_service - INFO - Новый ВУЗ успешно добавлен: baumanka
+2026-04-16 12:16:48,340 - university_service - INFO - Запрос данных ВУЗа с ID: 2
+2026-04-16 12:17:06,048 - university_service - INFO - Запрос данных ВУЗа с ID: 2
+2026-04-16 12:17:08,259 - university_service - INFO - Запрос данных ВУЗа с ID: 2
+2026-04-16 12:17:08,563 - university_service - INFO - Запрос данных ВУЗа с ID: 2
+2026-04-16 12:17:09,022 - university_service - INFO - Запрос данных ВУЗа с ID: 2
+2026-04-16 12:17:09,502 - university_service - INFO - Запрос данных ВУЗа с ID: 2
+2026-04-16 12:17:09,807 - university_service - INFO - Запрос данных ВУЗа с ID: 2
+2026-04-16 12:17:10,065 - university_service - INFO - Запрос данных ВУЗа с ID: 2
+2026-04-16 12:17:10,249 - university_service - INFO - Запрос данных ВУЗа с ID: 2
+2026-04-16 12:17:10,455 - university_service - INFO - Запрос данных ВУЗа с ID: 2
+2026-04-16 12:17:10,609 - university_service - INFO - Запрос данных ВУЗа с ID: 2
+2026-04-16 12:17:10,755 - university_service - INFO - Запрос данных ВУЗа с ID: 2
+2026-04-16 12:17:53,943 - university_service - INFO - Запрос данных ВУЗа с ID: 999
+2026-04-16 12:17:53,953 - university_service - WARNING - ВУЗ с ID 999 не найден
+2026-04-16 12:25:14,848 - university_service - INFO - Запрос данных ВУЗа с ID: 666
+2026-04-16 12:25:14,855 - university_service - WARNING - ВУЗ с ID 666 не найден
+2026-04-16 12:25:45,158 - university_service - INFO - Запрос данных ВУЗа с ID: 2
+2026-04-16 12:25:55,318 - university_service - INFO - Запрос данных ВУЗа с ID: 2
+2026-04-16 12:25:58,679 - university_service - INFO - Запрос данных ВУЗа с ID: 2
+2026-04-16 12:25:59,128 - university_service - INFO - Запрос данных ВУЗа с ID: 2
+2026-04-16 12:25:59,316 - university_service - INFO - Запрос данных ВУЗа с ID: 2
+2026-04-16 12:26:55,736 - university_service - INFO - Запрос данных ВУЗа с ID: 2
+2026-04-16 12:26:58,686 - university_service - INFO - Запрос данных ВУЗа с ID: 2
+2026-04-16 12:27:00,773 - university_service - INFO - Запрос данных ВУЗа с ID: 2
+2026-04-16 12:27:01,201 - university_service - INFO - Запрос данных ВУЗа с ID: 2
+2026-04-16 12:28:51,017 - university_service - INFO - Запрос данных ВУЗа с ID: 2
+2026-04-16 12:28:52,594 - university_service - INFO - Запрос данных ВУЗа с ID: 2
+2026-04-16 12:28:53,106 - university_service - INFO - Запрос данных ВУЗа с ID: 2
+2026-04-16 12:28:53,305 - university_service - INFO - Запрос данных ВУЗа с ID: 2
+2026-04-16 12:28:53,786 - university_service - INFO - Запрос данных ВУЗа с ID: 2
+2026-04-16 12:28:53,959 - university_service - INFO - Запрос данных ВУЗа с ID: 2
+2026-04-16 12:28:54,154 - university_service - INFO - Запрос данных ВУЗа с ID: 2
+2026-04-16 12:29:07,360 - university_service - INFO - Запрос данных ВУЗа с ID: 2
+2026-04-16 12:36:10,186 - university_service - INFO - Запрос данных ВУЗа с ID: 2
+2026-04-16 12:36:16,731 - university_service - INFO - Запрос данных ВУЗа с ID: 2
+2026-04-16 12:36:19,157 - university_service - INFO - Запрос данных ВУЗа с ID: 2
+2026-04-16 12:36:32,942 - university_service - INFO - Запрос данных ВУЗа с ID: 2
+2026-04-16 12:36:34,247 - university_service - INFO - Запрос данных ВУЗа с ID: 2
+2026-04-16 12:36:34,401 - university_service - INFO - Запрос данных ВУЗа с ID: 2
+2026-04-16 12:36:34,584 - university_service - INFO - Запрос данных ВУЗа с ID: 2
+2026-04-16 12:36:34,727 - university_service - INFO - Запрос данных ВУЗа с ID: 2
+2026-04-16 12:36:34,881 - university_service - INFO - Запрос данных ВУЗа с ID: 2
+2026-04-16 12:36:35,019 - university_service - INFO - Запрос данных ВУЗа с ID: 2
+2026-04-16 12:36:35,173 - university_service - INFO - Запрос данных ВУЗа с ID: 2
+2026-04-16 12:36:45,891 - university_service - INFO - Запрос данных ВУЗа с ID: 2
+2026-04-16 12:37:43,950 - university_service - INFO - Обновление рейтинга ВУЗа 2. Новая оценка: 1.0
+2026-04-16 12:37:44,003 - university_service - INFO - Обновлена статистика для ВУЗа 2: рейтинг 1.0, отзывов 1
+2026-04-16 12:37:49,000 - university_service - INFO - Запрос данных ВУЗа с ID: 2
+2026-04-16 12:40:13,235 - university_service - INFO - Запрос данных ВУЗа с ID: 7777777
+2026-04-16 12:40:13,241 - university_service - WARNING - ВУЗ с ID 7777777 не найден
+2026-04-16 12:44:01,373 - university_service - INFO - Запрос на список ВУЗов: city=None, min_rating=None, dorm=None
+2026-04-16 12:44:21,854 - university_service - INFO - Запрос данных ВУЗа с ID: 1
+2026-04-16 12:45:17,875 - university_service - INFO - Запрос на создание ВУЗа: MIPT
+2026-04-16 12:45:17,901 - university_service - INFO - Новый ВУЗ успешно добавлен: MIPT
+2026-04-16 12:45:41,869 - university_service - INFO - Запрос данных ВУЗа с ID: 3
+2026-04-16 12:45:48,917 - university_service - INFO - Запрос данных ВУЗа с ID: 3
+2026-04-16 12:45:51,672 - university_service - INFO - Запрос данных ВУЗа с ID: 3
+2026-04-16 12:46:11,651 - university_service - INFO - Запрос данных ВУЗа с ID: 3
+2026-04-16 12:46:12,437 - university_service - INFO - Запрос данных ВУЗа с ID: 3
+2026-04-16 12:46:12,756 - university_service - INFO - Запрос данных ВУЗа с ID: 3
+2026-04-16 12:46:13,017 - university_service - INFO - Запрос данных ВУЗа с ID: 3
+2026-04-16 12:46:13,458 - university_service - INFO - Запрос данных ВУЗа с ID: 3
+2026-04-16 12:46:13,688 - university_service - INFO - Запрос данных ВУЗа с ID: 3
+2026-04-16 12:46:13,885 - university_service - INFO - Запрос данных ВУЗа с ID: 3
+2026-04-16 12:46:14,274 - university_service - INFO - Запрос данных ВУЗа с ID: 3
+2026-04-16 12:46:14,537 - university_service - INFO - Запрос данных ВУЗа с ID: 3
+2026-04-16 12:52:21,593 - university_service - INFO - Обновление рейтинга ВУЗа 3. Новая оценка: 5.0
+2026-04-16 12:52:21,611 - university_service - INFO - Обновлена статистика для ВУЗа 3: рейтинг 5.0, отзывов 1
+2026-04-16 12:52:43,155 - university_service - INFO - Запрос данных ВУЗа с ID: 3
+2026-04-16 12:52:54,705 - university_service - INFO - Запрос данных ВУЗа с ID: 3
+2026-04-16 12:52:57,575 - university_service - INFO - Запрос данных ВУЗа с ID: 3
+2026-04-16 12:52:58,059 - university_service - INFO - Запрос данных ВУЗа с ID: 3
+2026-04-16 12:53:07,926 - university_service - INFO - Обновление рейтинга ВУЗа 3. Новая оценка: 1.0
+2026-04-16 12:53:07,959 - university_service - INFO - Обновлена статистика для ВУЗа 3: рейтинг 3.0, отзывов 2
+2026-04-16 12:53:33,798 - university_service - INFO - Обновление рейтинга ВУЗа 3. Новая оценка: 5.0
+2026-04-16 12:53:33,821 - university_service - INFO - Обновлена статистика для ВУЗа 3: рейтинг 3.67, отзывов 3
+2026-04-16 12:53:49,626 - university_service - INFO - Обновление рейтинга ВУЗа 3. Новая оценка: 5.0
+2026-04-16 12:53:49,661 - university_service - INFO - Обновлена статистика для ВУЗа 3: рейтинг 4.0, отзывов 4
+2026-04-16 12:54:08,355 - university_service - INFO - Запрос данных ВУЗа с ID: 3
+2026-04-16 12:54:10,654 - university_service - INFO - Запрос данных ВУЗа с ID: 3
+2026-04-16 12:54:11,126 - university_service - INFO - Запрос данных ВУЗа с ID: 3
+2026-04-16 12:54:11,302 - university_service - INFO - Запрос данных ВУЗа с ID: 3
+2026-04-16 12:54:11,513 - university_service - INFO - Запрос данных ВУЗа с ID: 3
+2026-04-16 12:54:42,151 - university_service - INFO - Обновление рейтинга ВУЗа 3. Новая оценка: 5.0
+2026-04-16 12:54:42,183 - university_service - INFO - Обновлена статистика для ВУЗа 3: рейтинг 4.2, отзывов 5
+2026-04-16 12:56:02,586 - university_service - INFO - Запрос на создание ВУЗа: HSE
+2026-04-16 12:56:02,617 - university_service - INFO - Новый ВУЗ успешно добавлен: HSE
+2026-04-16 12:56:22,477 - university_service - INFO - Запрос данных ВУЗа с ID: 4
+2026-04-16 12:56:33,908 - university_service - INFO - Запрос данных ВУЗа с ID: 4
+2026-04-16 12:56:35,811 - university_service - INFO - Запрос данных ВУЗа с ID: 4
+2026-04-16 12:56:36,027 - university_service - INFO - Запрос данных ВУЗа с ID: 4
+2026-04-16 12:56:36,192 - university_service - INFO - Запрос данных ВУЗа с ID: 4
+2026-04-16 12:56:36,411 - university_service - INFO - Запрос данных ВУЗа с ID: 4
+2026-04-16 12:56:49,340 - university_service - INFO - Запрос данных ВУЗа с ID: 4
+2026-04-16 12:56:51,751 - university_service - INFO - Запрос данных ВУЗа с ID: 4
+2026-04-16 13:00:37,379 - university_service - INFO - Запрос данных ВУЗа с ID: 4
+2026-04-16 13:01:52,558 - university_service - INFO - Обновление рейтинга ВУЗа 4. Новая оценка: 1.0
+2026-04-16 13:01:52,590 - university_service - INFO - Обновлена статистика для ВУЗа 4: рейтинг 1.0, отзывов 1
+2026-04-16 13:02:03,888 - university_service - INFO - Запрос данных ВУЗа с ID: 4
+2026-04-16 13:04:24,522 - university_service - INFO - Запрос данных ВУЗа с ID: 4
+2026-04-16 13:04:30,966 - university_service - INFO - Запрос данных ВУЗа с ID: 4
+2026-04-16 13:04:40,322 - university_service - INFO - Обновление рейтинга ВУЗа 4. Новая оценка: 5.0
+2026-04-16 13:04:40,345 - university_service - INFO - Обновлена статистика для ВУЗа 4: рейтинг 3.0, отзывов 2
+2026-04-16 13:04:44,586 - university_service - INFO - Запрос данных ВУЗа с ID: 4
+2026-04-16 13:05:04,391 - university_service - INFO - Обновление рейтинга ВУЗа 4. Новая оценка: 5.0
+2026-04-16 13:05:04,420 - university_service - INFO - Обновлена статистика для ВУЗа 4: рейтинг 3.67, отзывов 3
+2026-04-16 13:05:09,699 - university_service - INFO - Запрос данных ВУЗа с ID: 4
+2026-04-16 13:05:12,772 - university_service - INFO - Запрос данных ВУЗа с ID: 4
+2026-04-16 13:05:13,709 - university_service - INFO - Запрос данных ВУЗа с ID: 4
+2026-04-16 13:05:14,257 - university_service - INFO - Запрос данных ВУЗа с ID: 4
+2026-04-16 13:05:15,200 - university_service - INFO - Запрос данных ВУЗа с ID: 4
+2026-04-17 08:59:27,042 - university_service - INFO - Запрос на создание ВУЗа: test_uni1
+2026-04-17 08:59:27,353 - university_service - INFO - Новый ВУЗ успешно добавлен: test_uni1
+2026-04-17 09:00:11,179 - university_service - INFO - Запрос данных ВУЗа с ID: 5
+2026-04-17 09:00:21,423 - university_service - INFO - Запрос данных ВУЗа с ID: 5
+2026-04-17 09:02:28,699 - university_service - INFO - Обновление рейтинга ВУЗа 5. Оценка: 3.0, action: approve
+2026-04-17 09:02:28,744 - university_service - INFO - Обновлена статистика для ВУЗа 5: action=approve, рейтинг 3.0, отзывов 1
+2026-04-17 09:02:40,774 - university_service - INFO - Запрос данных ВУЗа с ID: 5
+2026-04-17 09:03:05,388 - university_service - INFO - Обновление рейтинга ВУЗа 5. Оценка: 3.0, action: delete
+2026-04-17 09:03:05,424 - university_service - INFO - Обновлена статистика для ВУЗа 5: action=delete, рейтинг 1.0, отзывов 0
+2026-04-17 09:03:08,622 - university_service - INFO - Запрос данных ВУЗа с ID: 5
+2026-04-17 09:03:13,674 - university_service - INFO - Запрос данных ВУЗа с ID: 5
+2026-04-17 11:04:46,242 - university_service - INFO - Запрос на создание ВУЗа: test_uni2
+2026-04-17 11:04:46,327 - university_service - INFO - Новый ВУЗ успешно добавлен: test_uni2

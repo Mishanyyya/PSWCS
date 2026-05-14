@@ -1,0 +1,71 @@
+services:
+
+  db_users:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: users_db
+    volumes:
+      - db_users_data:/var/lib/postgresql/data
+
+  db_review:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: review_db
+    volumes:
+      - db_review_data:/var/lib/postgresql/data
+
+  db_university:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: university_db
+    volumes:
+      - db_university_data:/var/lib/postgresql/data
+
+  users:
+    build: ./services/users
+    ports:
+      - "8001:8001"
+    environment:
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@db_users:5432/users_db
+      JWT_SECRET: your-secret-key-change-in-production
+      SERVICE_PORT: 8001
+    depends_on:
+      - db_users
+
+  review:
+    build: ./services/review
+    ports:
+      - "8002:8002"
+    environment:
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@db_review:5432/review_db
+      USER_SERVICE_URL: http://users:8001
+      UNIVERSITY_SERVICE_URL: http://university:8003
+      REQUEST_TIMEOUT: "10.0"
+      SERVICE_PORT: 8002
+    depends_on:
+      - db_review
+      - users
+      - university
+
+  university:
+    build: ./services/university
+    ports:
+      - "8003:8003"
+    environment:
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@db_university:5432/university_db
+      REVIEW_SERVICE_URL: http://review:8002
+      USER_SERVICE_URL: http://users:8001
+      SERVICE_PORT: 8003
+    depends_on:
+      - db_university
+
+volumes:
+  db_users_data:
+  db_review_data:
+  db_university_data:

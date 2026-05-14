@@ -16,7 +16,7 @@ os.environ.setdefault("ACCESS_TOKEN_EXPIRE_MINUTES", "30")
 
 from app.main import app
 from app.db.base import Base
-from app.api.users import get_db   # убедитесь, что путь правильный
+from app.api.users import get_db 
 
 TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
 test_engine = create_async_engine(TEST_DATABASE_URL, connect_args={"check_same_thread": False})

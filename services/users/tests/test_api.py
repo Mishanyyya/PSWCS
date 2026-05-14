@@ -1,6 +1,6 @@
-"""
-Интеграционные тесты API-эндпоинтов микросервиса пользователей.
-"""
+
+# Интеграционные тесты API-эндпоинтов микросервиса пользователей.
+
 import pytest
 from httpx import AsyncClient
 
@@ -10,7 +10,6 @@ LOGIN_URL = "/users/login"
 VALIDATE_URL = "/users/auth/validation"
 
 
-# ─── Вспомогательные функции ──────────────────────────────────────────────────
 
 async def register_user(client: AsyncClient, email="test@test.com", password="pass123", full_name="Test User"):
     return await client.post(REGISTER_URL, json={
@@ -24,8 +23,7 @@ async def get_token(client: AsyncClient, email="test@test.com", password="pass12
     resp = await client.post(LOGIN_URL, json={"email": email, "password": password})
     return resp.json()["access_token"]
 
-
-# ─── Регистрация ──────────────────────────────────────────────────────────────
+# регистрация
 
 @pytest.mark.asyncio
 class TestRegister:
@@ -58,8 +56,7 @@ class TestRegister:
         assert resp.json()["full_name"] is None
 
 
-# ─── Логин ────────────────────────────────────────────────────────────────────
-
+#  Логин 
 @pytest.mark.asyncio
 class TestLogin:
     async def test_login_success(self, client):
@@ -83,8 +80,7 @@ class TestLogin:
         resp = await client.post(LOGIN_URL, json={"email": "not-email"})
         assert resp.status_code == 422
 
-
-# ─── Валидация токена ─────────────────────────────────────────────────────────
+# валидация токена
 
 @pytest.mark.asyncio
 class TestValidateToken:
@@ -120,7 +116,7 @@ class TestValidateToken:
         assert resp.status_code == 401
 
 
-# ─── CRUD пользователей ───────────────────────────────────────────────────────
+# круд пользователей
 
 @pytest.mark.asyncio
 class TestUserCRUD:

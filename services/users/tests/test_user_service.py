@@ -1,6 +1,6 @@
-"""
-Тесты сервисного слоя: create_user, get_user_by_email, get_user_by_id.
-"""
+
+# Тесты create_user, get_user_by_email, get_user_by_id.
+
 import pytest
 import pytest_asyncio
 
@@ -24,7 +24,7 @@ class TestCreateUser:
         user = await create_user(db_session, data)
 
         assert user.hashed_password != "plaintext"
-        assert len(user.hashed_password) > 20  # bcrypt хэш длинный
+        assert len(user.hashed_password) > 20  #  хэш длинный
 
     async def test_default_role_is_user(self, db_session):
         data = UserCreate(email="carol@example.com", password="qwerty")
@@ -56,7 +56,7 @@ class TestGetUserByEmail:
         await create_user(db_session, data)
 
         result = await get_user_by_email(db_session, "EVE@example.com")
-        assert result is None  # email хранится as-is
+        assert result is None 
 
 
 @pytest.mark.asyncio

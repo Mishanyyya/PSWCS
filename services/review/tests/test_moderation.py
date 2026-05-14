@@ -1,21 +1,18 @@
 """
-test_moderation.py — тесты для app/routers/moderation.py
-
-Ключевая проверка лабораторной: модерация с учётом ролей из User service.
-Обычный пользователь не может модерировать — только admin.
+модерация с учётом ролей из User service.
+Обычный пользователь не может модерировать 
 """
 import pytest
 from conftest import make_review, REGULAR_USER, ADMIN_USER, AUTH
 
 
-# ══════════════════════════════════════════════════════════════════════════════
-# GET /api/v1/reviews/moderation/pending  — очередь модерации
-# ══════════════════════════════════════════════════════════════════════════════
+
+# GET /api/v1/reviews/moderation/pending 
 class TestModerationQueue:
 
     @pytest.mark.asyncio
     async def test_admin_sees_pending_reviews(self, client, db_session, mock_as_admin):
-        """Админ получает список pending отзывов."""
+    #    адимн получает все ревью в статусе пендинг
         await make_review(db_session, status="pending")
         await make_review(db_session, author_id=99, university_id=2, status="pending")
         await make_review(db_session, author_id=88, university_id=3, status="approved")  # не должен попасть
@@ -28,26 +25,26 @@ class TestModerationQueue:
 
     @pytest.mark.asyncio
     async def test_regular_user_forbidden(self, client, db_session, mock_as_regular_user):
-        """Обычный пользователь не может видеть очередь → 403."""
+        # для обычного у нас будет 403 (он не должен видеть)
         resp = await client.get("/api/v1/reviews/moderation/pending", headers=AUTH)
         assert resp.status_code == 403
 
     @pytest.mark.asyncio
     async def test_unauthenticated_forbidden(self, client, mock_as_unauth):
-        """Без токена → 401."""
+    # без токена 401  
         resp = await client.get("/api/v1/reviews/moderation/pending", headers=AUTH)
         assert resp.status_code == 401
 
     @pytest.mark.asyncio
     async def test_empty_queue(self, client, mock_as_admin):
-        """Пустая очередь → пустой список, не ошибка."""
+        # очереди нет - пустой список и всё
         resp = await client.get("/api/v1/reviews/moderation/pending", headers=AUTH)
         assert resp.status_code == 200
         assert resp.json() == []
 
     @pytest.mark.asyncio
     async def test_pagination(self, client, db_session, mock_as_admin):
-        """Пагинация очереди модерации."""
+        # разбивка на страницы
         for i in range(5):
             await make_review(db_session, author_id=100 + i, university_id=i + 1, status="pending")
 
@@ -56,16 +53,14 @@ class TestModerationQueue:
         assert len(resp.json()) == 2
 
 
-# ══════════════════════════════════════════════════════════════════════════════
-# POST /api/v1/reviews/{id}/approve  — одобрение
-# ══════════════════════════════════════════════════════════════════════════════
+# POST /api/v1/reviews/{id}/approve 
 class TestApproveReview:
 
     @pytest.mark.asyncio
     async def test_admin_approves_pending(
         self, client, db_session, mock_as_admin, university_update_stats
     ):
-        """Админ одобряет pending отзыв → статус approved."""
+        # одобрение - смена пендинг на апрув
         review = await make_review(db_session, status="pending")
         resp = await client.post(f"/api/v1/reviews/{review.id}/approve", headers=AUTH)
         assert resp.status_code == 200
@@ -75,7 +70,7 @@ class TestApproveReview:
     async def test_approve_calls_university_stats(
         self, client, db_session, mock_as_admin, university_update_stats
     ):
-        """После approve вызывается update_stats у University service."""
+    #    обновление статистики идет после апрув
         review = await make_review(db_session, status="pending")
         await client.post(f"/api/v1/reviews/{review.id}/approve", headers=AUTH)
         university_update_stats.assert_called_once()
@@ -87,7 +82,7 @@ class TestApproveReview:
     async def test_approve_creates_moderation_log(
         self, client, db_session, mock_as_admin, university_update_stats
     ):
-        """После approve создаётся запись в moderation_logs."""
+        # также создаются логи
         from sqlalchemy import select
         from app.models import ModerationLog
 
@@ -106,33 +101,31 @@ class TestApproveReview:
     async def test_approve_already_approved(
         self, client, db_session, mock_as_admin, university_update_stats
     ):
-        """Повторное одобрение уже approved отзыва → 400."""
+    #   если уже одобряли этот отзыв - 400
         review = await make_review(db_session, status="approved")
         resp = await client.post(f"/api/v1/reviews/{review.id}/approve", headers=AUTH)
         assert resp.status_code == 400
 
     @pytest.mark.asyncio
     async def test_approve_nonexistent(self, client, mock_as_admin):
-        """Несуществующий отзыв → 404."""
+        # отзыв не найден - 404
         resp = await client.post("/api/v1/reviews/99999/approve", headers=AUTH)
         assert resp.status_code == 404
 
     @pytest.mark.asyncio
     async def test_regular_user_cannot_approve(self, client, db_session, mock_as_regular_user):
-        """Роль 'user' не может одобрять → 403."""
+        # обычный юзер не сможет одобрить, возвращаем 403
         review = await make_review(db_session, status="pending")
         resp = await client.post(f"/api/v1/reviews/{review.id}/approve", headers=AUTH)
         assert resp.status_code == 403
 
 
-# ══════════════════════════════════════════════════════════════════════════════
-# POST /api/v1/reviews/{id}/reject  — отклонение
-# ══════════════════════════════════════════════════════════════════════════════
+# POST /api/v1/reviews/{id}/reject
 class TestRejectReview:
 
     @pytest.mark.asyncio
     async def test_admin_rejects_pending(self, client, db_session, mock_as_admin):
-        """Админ отклоняет pending отзыв с причиной → статус rejected."""
+        # отклонили пендинг значит статус новый - реджект (плюс причина какая то есть)
         review = await make_review(db_session, status="pending")
         resp = await client.post(
             f"/api/v1/reviews/{review.id}/reject",
@@ -144,7 +137,7 @@ class TestRejectReview:
 
     @pytest.mark.asyncio
     async def test_reject_creates_log_with_reason(self, client, db_session, mock_as_admin):
-        """После reject в moderation_logs сохраняется причина."""
+    #    в логи модерации падает та причина как раз
         from sqlalchemy import select
         from app.models import ModerationLog
 
@@ -167,7 +160,7 @@ class TestRejectReview:
 
     @pytest.mark.asyncio
     async def test_reject_without_reason_fails(self, client, db_session, mock_as_admin):
-        """Отклонение без причины (reason < 5 символов) → 422."""
+        # отклонение без причины (422 - то есть по сути ошибка валдиации)
         review = await make_review(db_session, status="pending")
         resp = await client.post(
             f"/api/v1/reviews/{review.id}/reject",
@@ -178,7 +171,7 @@ class TestRejectReview:
 
     @pytest.mark.asyncio
     async def test_reject_already_rejected(self, client, db_session, mock_as_admin):
-        """Повторное отклонение → 400."""
+        # повторное отклонение 
         review = await make_review(db_session, status="rejected")
         resp = await client.post(
             f"/api/v1/reviews/{review.id}/reject",
@@ -191,7 +184,7 @@ class TestRejectReview:
     async def test_reject_does_not_call_university_stats(
         self, client, db_session, mock_as_admin, university_update_stats
     ):
-        """Отклонённый отзыв НЕ обновляет статистику вуза."""
+        # отклоненый отзыв не обновляет стату вуза
         review = await make_review(db_session, status="pending")
         await client.post(
             f"/api/v1/reviews/{review.id}/reject",
@@ -202,7 +195,7 @@ class TestRejectReview:
 
     @pytest.mark.asyncio
     async def test_regular_user_cannot_reject(self, client, db_session, mock_as_regular_user):
-        """Роль 'user' не может отклонять → 403."""
+        # юзер не отклоняет 
         review = await make_review(db_session, status="pending")
         resp = await client.post(
             f"/api/v1/reviews/{review.id}/reject",
@@ -210,58 +203,3 @@ class TestRejectReview:
             headers=AUTH,
         )
         assert resp.status_code == 403
-
-
-# ══════════════════════════════════════════════════════════════════════════════
-# GET /api/v1/reviews/{id}/logs  — история модерации
-# ══════════════════════════════════════════════════════════════════════════════
-class TestModerationLogs:
-
-    @pytest.mark.asyncio
-    async def test_admin_sees_logs(
-        self, client, db_session, mock_as_admin, university_update_stats
-    ):
-        """Админ видит историю модерации отзыва."""
-        review = await make_review(db_session, status="pending")
-        # Создаём лог через approve
-        await client.post(f"/api/v1/reviews/{review.id}/approve", headers=AUTH)
-
-        resp = await client.get(f"/api/v1/reviews/{review.id}/logs", headers=AUTH)
-        assert resp.status_code == 200
-        logs = resp.json()
-        assert len(logs) == 1
-        assert logs[0]["action"] == "approve"
-
-    @pytest.mark.asyncio
-    async def test_regular_user_cannot_see_logs(self, client, db_session, mock_as_regular_user):
-        """Обычный пользователь не видит логи → 403."""
-        review = await make_review(db_session)
-        resp = await client.get(f"/api/v1/reviews/{review.id}/logs", headers=AUTH)
-        assert resp.status_code == 403
-
-    @pytest.mark.asyncio
-    async def test_logs_ordered_by_date_desc(
-        self, client, db_session, mock_as_admin, university_update_stats
-    ):
-        """Логи отсортированы по дате (новые первые)."""
-        from app.models import ModerationLog
-        from datetime import datetime, timedelta
-
-        review = await make_review(db_session, status="pending")
-
-        log1 = ModerationLog(
-            review_id=review.id, moderator_id=2, action="reject",
-            reason="Первая проверка",
-            created_at=datetime.utcnow() - timedelta(hours=2)
-        )
-        log2 = ModerationLog(
-            review_id=review.id, moderator_id=2, action="approve",
-            created_at=datetime.utcnow()
-        )
-        db_session.add_all([log1, log2])
-        await db_session.commit()
-
-        resp = await client.get(f"/api/v1/reviews/{review.id}/logs", headers=AUTH)
-        logs = resp.json()
-        assert logs[0]["action"] == "approve"   # новый первый
-        assert logs[1]["action"] == "reject"

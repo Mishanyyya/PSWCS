@@ -1,22 +1,19 @@
 """
-test_clients.py — тесты для межсервисных клиентов
-
-Проверяем что клиенты правильно обрабатывают ответы
-внешних сервисов и не падают при их недоступности.
+тут как бы
+роверяем что клиенты правильно обрабатывают ответы
+внешних сервисов
 """
 import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
 import httpx
 
 
-# ══════════════════════════════════════════════════════════════════════════════
-# UserClient
-# ══════════════════════════════════════════════════════════════════════════════
+# юзер клиент
 class TestUserClient:
 
     @pytest.mark.asyncio
     async def test_validate_token_success(self):
-        """Валидный токен → возвращает данные пользователя."""
+        # валидный токен возвращает данные юзера
         from app.clients.user_client import UserClient
 
         mock_response = MagicMock()
@@ -38,7 +35,7 @@ class TestUserClient:
 
     @pytest.mark.asyncio
     async def test_validate_token_invalid(self):
-        """Невалидный токен (401 от сервиса) → None."""
+        # невалидный (401) значит none
         from app.clients.user_client import UserClient
 
         mock_response = MagicMock()
@@ -53,7 +50,7 @@ class TestUserClient:
 
     @pytest.mark.asyncio
     async def test_validate_token_service_unavailable(self):
-        """User service недоступен → None (не исключение)."""
+        # если сервис недоступен то none
         from app.clients.user_client import UserClient
 
         with patch("httpx.AsyncClient.get", side_effect=httpx.ConnectError("refused")):
@@ -64,7 +61,7 @@ class TestUserClient:
 
     @pytest.mark.asyncio
     async def test_validate_token_unexpected_error(self):
-        """Непредвиденная ошибка → None (не падает)."""
+        # любая непредвиденная ошибка тоже none
         from app.clients.user_client import UserClient
 
         with patch("httpx.AsyncClient.get", side_effect=Exception("unexpected")):
@@ -73,15 +70,12 @@ class TestUserClient:
 
         assert result is None
 
-
-# ══════════════════════════════════════════════════════════════════════════════
-# UniversityClient
-# ══════════════════════════════════════════════════════════════════════════════
+# юниверсити клиент
 class TestUniversityClient:
 
     @pytest.mark.asyncio
     async def test_check_university_exists_true(self):
-        """University service вернул 200 → True."""
+        # вернул 200 - тру
         from app.clients.university_client import UniversityClient
 
         mock_response = MagicMock()
@@ -95,7 +89,7 @@ class TestUniversityClient:
 
     @pytest.mark.asyncio
     async def test_check_university_exists_false(self):
-        """University service вернул 404 → False."""
+        # вернул 404 - фолз
         from app.clients.university_client import UniversityClient
 
         mock_response = MagicMock()
@@ -109,7 +103,7 @@ class TestUniversityClient:
 
     @pytest.mark.asyncio
     async def test_check_university_service_down(self):
-        """University service недоступен → False (не исключение)."""
+    #   недоступен значит тожеж фолз
         from app.clients.university_client import UniversityClient
 
         with patch("httpx.AsyncClient.get", side_effect=Exception("timeout")):
@@ -120,7 +114,7 @@ class TestUniversityClient:
 
     @pytest.mark.asyncio
     async def test_update_stats_success(self):
-        """Успешное обновление статистики → True."""
+        # обновили стату - тру
         from app.clients.university_client import UniversityClient
 
         mock_response = MagicMock()
@@ -134,7 +128,7 @@ class TestUniversityClient:
 
     @pytest.mark.asyncio
     async def test_update_stats_service_down(self):
-        """University service недоступен при update_stats → False (не падает)."""
+        # недоступен когда стату обновляем - фолз
         from app.clients.university_client import UniversityClient
 
         with patch("httpx.AsyncClient.patch", side_effect=Exception("timeout")):

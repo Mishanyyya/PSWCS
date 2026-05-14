@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+# ─── pre-commit: запускается перед каждым коммитом ────────────────────────────
+# Проверяет: ruff (lint + format) и юнит-тесты users-сервиса.
+# Установить: git config core.hooksPath .githooks
+
+set -euo pipefail
+
+BOLD="\033[1m"
+RED="\033[31m"
+GREEN="\033[32m"
+YELLOW="\033[33m"
+RESET="\033[0m"
+
+log()  { echo -e "${BOLD}[pre-commit]${RESET} $*"; }
+ok()   { echo -e "${GREEN}✔${RESET}  $*"; }
+fail() { echo -e "${RED}✘${RESET}  $*"; exit 1; }
+
+USERS_DIR="services/users"
+
+# ─── 1. Ruff: проверка кода ───────────────────────────────────────────────────
+log "Ruff lint..."
+if command -v ruff &>/dev/null; then
+    ruff check "$USERS_DIR/app" || fail "Ruff нашёл ошибки. Исправьте и снова git add."
+    ok "Ruff: всё чисто"
+else
+    echo -e "${YELLOW}⚠${RESET}  ruff не найден, пропускаем lint"
+fi
+
+# ─── 2. Ruff: проверка форматирования ────────────────────────────────────────
+log "Ruff format check..."
+if command -v ruff &>/dev/null; then
+    ruff format --check "$USERS_DIR/app" || fail "Код не отформатирован. Запустите: ruff format services/users/app"
+    ok "Ruff format: ОК"
+fi
+
+# ─── 3. Юнит-тесты ───────────────────────────────────────────────────────────
+log "Запуск тестов ($USERS_DIR)..."
+
+if [ ! -d "$USERS_DIR/.venv" ] && ! command -v pytest &>/dev/null; then
+    echo -e "${YELLOW}⚠${RESET}  pytest не найден, пропускаем тесты"
+    exit 0
+fi
+
+# Активируем venv, если он есть
+if [ -d "$USERS_DIR/.venv" ]; then
+    # shellcheck disable=SC1091
+    source "$USERS_DIR/.venv/bin/activate"
+fi
+
+(
+    cd "$USERS_DIR"
+    pytest tests/ -q --tb=short 2>&1 | tail -20
+) || fail "Тесты упали — коммит отменён."
+
+ok "Все тесты прошли"

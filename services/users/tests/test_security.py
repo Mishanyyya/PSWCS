@@ -19,13 +19,13 @@ class TestHashPassword:
         assert hash_password(password) != password
 
     def test_different_hashes_for_same_password(self):
-        """bcrypt использует случайную соль — хэши должны различаться."""
+        # bcrypt использует случайный префикс чтобы хэши различались
         h1 = hash_password("same")
         h2 = hash_password("same")
         assert h1 != h2
 
     def test_truncates_at_72_bytes(self):
-        """Пароли длиннее 72 байт усекаются одинаково."""
+        # Пароли длиннее 72 байт усекаются одинаково
         long_pass = "a" * 100
         h = hash_password(long_pass)
         assert verify_password("a" * 72, h)
@@ -45,7 +45,7 @@ class TestVerifyPassword:
         assert verify_password("", h) is False
 
     def test_invalid_hash_returns_false(self):
-        """Не должно падать на невалидном хэше."""
+        # Не должно падать на невалидном хэше
         assert verify_password("password", "not-a-bcrypt-hash") is False
 
 

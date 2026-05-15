@@ -28,3 +28,6 @@ class Settings:
 
 # Создаем экземпляр настроек
 settings = Settings()
+
+
+# ЭТО КОНФИГ

@@ -274,3 +274,72 @@
 2026-05-14 21:34:15,417 - university_service - ERROR - Попытка добавления существующего ВУЗа: Новый вуз
 2026-05-14 21:34:15,473 - university_service - INFO - Обновление рейтинга ВУЗа 99999. Оценка: 4.0, action: approve
 2026-05-14 21:34:15,476 - university_service - WARNING - ВУЗ 99999 не найден для обновления рейтинга
+2026-05-14 21:50:59,691 - university_service - INFO - Новый ВУЗ успешно добавлен: МФТИ
+2026-05-14 21:50:59,714 - university_service - INFO - Новый ВУЗ успешно добавлен: НГУ
+2026-05-14 21:50:59,717 - university_service - ERROR - Попытка добавления существующего ВУЗа: НГУ
+2026-05-14 21:50:59,744 - university_service - INFO - Новый ВУЗ успешно добавлен: Тестовый вуз
+2026-05-14 21:50:59,979 - university_service - INFO - Обновлена статистика для ВУЗа 1: action=approve, рейтинг 4.0, отзывов 1
+2026-05-14 21:51:00,010 - university_service - INFO - Обновлена статистика для ВУЗа 1: action=approve, рейтинг 3.0, отзывов 2
+2026-05-14 21:51:00,041 - university_service - INFO - Обновлена статистика для ВУЗа 1: action=delete, рейтинг 5.0, отзывов 1
+2026-05-14 21:51:00,073 - university_service - INFO - Обновлена статистика для ВУЗа 1: action=delete, рейтинг 0.0, отзывов 0
+2026-05-14 21:51:00,102 - university_service - INFO - Обновлена статистика для ВУЗа 1: action=approve, рейтинг 5.0, отзывов 11
+2026-05-14 21:51:00,126 - university_service - INFO - Обновлена статистика для ВУЗа 1: action=approve, рейтинг 1.0, отзывов 2
+2026-05-14 21:51:00,168 - university_service - INFO - Запрос на список ВУЗов: city=None, min_rating=None, dorm=None
+2026-05-14 21:51:00,200 - university_service - INFO - Запрос на список ВУЗов: city=None, min_rating=None, dorm=None
+2026-05-14 21:51:00,229 - university_service - INFO - Запрос данных ВУЗа с ID: 1
+2026-05-14 21:51:00,250 - university_service - INFO - Запрос данных ВУЗа с ID: 99999
+2026-05-14 21:51:00,252 - university_service - WARNING - ВУЗ с ID 99999 не найден
+2026-05-14 21:51:00,273 - university_service - INFO - Запрос на создание ВУЗа: Новый вуз
+2026-05-14 21:51:00,303 - university_service - INFO - Новый ВУЗ успешно добавлен: Новый вуз
+2026-05-14 21:51:00,319 - university_service - INFO - Запрос на создание ВУЗа: Новый вуз
+2026-05-14 21:51:00,327 - university_service - INFO - Новый ВУЗ успешно добавлен: Новый вуз
+2026-05-14 21:51:00,332 - university_service - INFO - Запрос на создание ВУЗа: Новый вуз
+2026-05-14 21:51:00,334 - university_service - ERROR - Попытка добавления существующего ВУЗа: Новый вуз
+2026-05-14 21:51:00,388 - university_service - INFO - Обновление рейтинга ВУЗа 99999. Оценка: 4.0, action: approve
+2026-05-14 21:51:00,391 - university_service - WARNING - ВУЗ 99999 не найден для обновления рейтинга
+2026-05-15 09:21:42,459 - university_service - INFO - Новый ВУЗ успешно добавлен: МФТИ
+2026-05-15 09:21:42,497 - university_service - INFO - Новый ВУЗ успешно добавлен: НГУ
+2026-05-15 09:21:42,498 - university_service - ERROR - Попытка добавления существующего ВУЗа: НГУ
+2026-05-15 09:21:42,526 - university_service - INFO - Новый ВУЗ успешно добавлен: Тестовый вуз
+2026-05-15 09:21:42,794 - university_service - INFO - Обновлена статистика для ВУЗа 1: action=approve, рейтинг 4.0, отзывов 1
+2026-05-15 09:21:42,823 - university_service - INFO - Обновлена статистика для ВУЗа 1: action=approve, рейтинг 3.0, отзывов 2
+2026-05-15 09:21:42,857 - university_service - INFO - Обновлена статистика для ВУЗа 1: action=delete, рейтинг 5.0, отзывов 1
+2026-05-15 09:21:42,894 - university_service - INFO - Обновлена статистика для ВУЗа 1: action=delete, рейтинг 0.0, отзывов 0
+2026-05-15 09:21:42,925 - university_service - INFO - Обновлена статистика для ВУЗа 1: action=approve, рейтинг 5.0, отзывов 11
+2026-05-15 09:21:42,952 - university_service - INFO - Обновлена статистика для ВУЗа 1: action=approve, рейтинг 1.0, отзывов 2
+2026-05-15 09:21:42,996 - university_service - INFO - Запрос на список ВУЗов: city=None, min_rating=None, dorm=None
+2026-05-15 09:21:43,031 - university_service - INFO - Запрос на список ВУЗов: city=None, min_rating=None, dorm=None
+2026-05-15 09:21:43,056 - university_service - INFO - Запрос данных ВУЗа с ID: 1
+2026-05-15 09:21:43,079 - university_service - INFO - Запрос данных ВУЗа с ID: 99999
+2026-05-15 09:21:43,082 - university_service - WARNING - ВУЗ с ID 99999 не найден
+2026-05-15 09:21:43,099 - university_service - INFO - Запрос на создание ВУЗа: Новый вуз
+2026-05-15 09:21:43,106 - university_service - INFO - Новый ВУЗ успешно добавлен: Новый вуз
+2026-05-15 09:21:43,141 - university_service - INFO - Запрос на создание ВУЗа: Новый вуз
+2026-05-15 09:21:43,147 - university_service - INFO - Новый ВУЗ успешно добавлен: Новый вуз
+2026-05-15 09:21:43,150 - university_service - INFO - Запрос на создание ВУЗа: Новый вуз
+2026-05-15 09:21:43,151 - university_service - ERROR - Попытка добавления существующего ВУЗа: Новый вуз
+2026-05-15 09:21:43,206 - university_service - INFO - Обновление рейтинга ВУЗа 99999. Оценка: 4.0, action: approve
+2026-05-15 09:21:43,209 - university_service - WARNING - ВУЗ 99999 не найден для обновления рейтинга
+2026-05-15 10:34:23,780 - university_service - INFO - Новый ВУЗ успешно добавлен: МФТИ
+2026-05-15 10:34:23,799 - university_service - INFO - Новый ВУЗ успешно добавлен: НГУ
+2026-05-15 10:34:23,801 - university_service - ERROR - Попытка добавления существующего ВУЗа: НГУ
+2026-05-15 10:34:23,824 - university_service - INFO - Новый ВУЗ успешно добавлен: Тестовый вуз
+2026-05-15 10:34:23,982 - university_service - INFO - Обновлена статистика для ВУЗа 1: action=approve, рейтинг 4.0, отзывов 1
+2026-05-15 10:34:24,004 - university_service - INFO - Обновлена статистика для ВУЗа 1: action=approve, рейтинг 3.0, отзывов 2
+2026-05-15 10:34:24,031 - university_service - INFO - Обновлена статистика для ВУЗа 1: action=delete, рейтинг 5.0, отзывов 1
+2026-05-15 10:34:24,053 - university_service - INFO - Обновлена статистика для ВУЗа 1: action=delete, рейтинг 0.0, отзывов 0
+2026-05-15 10:34:24,075 - university_service - INFO - Обновлена статистика для ВУЗа 1: action=approve, рейтинг 5.0, отзывов 11
+2026-05-15 10:34:24,097 - university_service - INFO - Обновлена статистика для ВУЗа 1: action=approve, рейтинг 1.0, отзывов 2
+2026-05-15 10:34:24,134 - university_service - INFO - Запрос на список ВУЗов: city=None, min_rating=None, dorm=None
+2026-05-15 10:34:24,162 - university_service - INFO - Запрос на список ВУЗов: city=None, min_rating=None, dorm=None
+2026-05-15 10:34:24,191 - university_service - INFO - Запрос данных ВУЗа с ID: 1
+2026-05-15 10:34:24,211 - university_service - INFO - Запрос данных ВУЗа с ID: 99999
+2026-05-15 10:34:24,214 - university_service - WARNING - ВУЗ с ID 99999 не найден
+2026-05-15 10:34:24,233 - university_service - INFO - Запрос на создание ВУЗа: Новый вуз
+2026-05-15 10:34:24,242 - university_service - INFO - Новый ВУЗ успешно добавлен: Новый вуз
+2026-05-15 10:34:24,265 - university_service - INFO - Запрос на создание ВУЗа: Новый вуз
+2026-05-15 10:34:24,272 - university_service - INFO - Новый ВУЗ успешно добавлен: Новый вуз
+2026-05-15 10:34:24,275 - university_service - INFO - Запрос на создание ВУЗа: Новый вуз
+2026-05-15 10:34:24,276 - university_service - ERROR - Попытка добавления существующего ВУЗа: Новый вуз
+2026-05-15 10:34:24,333 - university_service - INFO - Обновление рейтинга ВУЗа 99999. Оценка: 4.0, action: approve
+2026-05-15 10:34:24,335 - university_service - WARNING - ВУЗ 99999 не найден для обновления рейтинга

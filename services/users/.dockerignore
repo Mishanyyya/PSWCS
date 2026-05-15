@@ -1,0 +1,11 @@
+.venv
+__pycache__
+*.pyc
+*.pyo
+.env
+.git
+.DS_Store
+tests/
+*.md
+alembic/versions/
+users_credentials.txt

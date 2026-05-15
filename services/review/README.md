@@ -9,7 +9,7 @@
 ```bash
 cd PSWCS/services/review
 
-# Создать виртуальное окружение
+
 python -m venv venv
 source venv/bin/activate        # Linux/Mac
 venv\Scripts\activate           # Windows

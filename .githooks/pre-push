@@ -1,0 +1,124 @@
+#!/usr/bin/env sh
+
+set -eu
+
+SERVICES_DIR="services"
+
+SERVICES_CONFIG="users:70 review:70 university:70"
+
+get_min_coverage() {
+    local service=$1
+    for config in $SERVICES_CONFIG; do
+        if [ "${config%:*}" = "$service" ]; then
+            echo "${config#*:}"
+            return 0
+        fi
+    done
+    echo "70" 
+}
+
+run_tests_for_service() {
+    local service=$1
+    local min_coverage=$(get_min_coverage "$service")
+    local service_dir="$SERVICES_DIR/$service"
+    
+    echo ""
+    echo "========================================="
+    echo "Running tests for $service service"
+    echo "Required coverage: ${min_coverage}%"
+    echo "========================================="
+    
+    if [ ! -d "$service_dir" ]; then
+        printf "WARNING: Service directory %s not found, skipping...\n" "$service_dir"
+        return 0
+    fi
+    
+    local venv_path="$service_dir/.venv/bin/activate"
+    if [ -f "$venv_path" ]; then
+        # shellcheck disable=SC1090
+        . "$venv_path"
+    fi
+    
+    if ! command -v pytest >/dev/null 2>&1; then
+        printf "ERROR: pytest not installed for %s\n" "$service"
+        return 1
+    fi
+    
+    if ! python -c "import pytest_cov" >/dev/null 2>&1; then
+        printf "ERROR: pytest-cov not installed for %s\n" "$service"
+        return 1
+    fi
+    
+    (
+        cd "$service_dir"
+        
+        local tests_path=""
+        if [ -d "tests" ]; then
+            tests_path="tests/"
+        elif [ -d "app/tests" ]; then
+            tests_path="app/tests/"
+        else
+            printf "WARNING: No tests directory found in %s\n" "$service"
+            return 0
+        fi
+        
+        local cov_module="app"
+        if [ ! -d "app" ] && [ -d "$service/app" ]; then
+            cov_module="$service/app"
+        fi
+        
+        pytest $tests_path \
+            --cov=$cov_module \
+            --cov-report=term-missing \
+            --cov-report=html \
+            --cov-fail-under=$min_coverage \
+            -q --tb=short
+        
+        return $?
+    )
+    
+    local exit_code=$?
+    if [ $exit_code -eq 0 ]; then
+        printf "✓ %s: coverage >= %s%%\n" "$service" "$min_coverage"
+    else
+        printf "✗ %s: tests failed or coverage < %s%%\n" "$service" "$min_coverage"
+    fi
+    
+    return $exit_code
+}
+
+main() {
+    local failed=0
+    local services_list=""
+    
+    for config in $SERVICES_CONFIG; do
+        services_list="$services_list ${config%:*}"
+    done
+    
+    printf "Starting tests for all services...\n"
+    printf "Services to test:%s\n" "$services_list"
+    
+    if [ ! -d "$SERVICES_DIR" ]; then
+        printf "ERROR: Services directory '%s' not found\n" "$SERVICES_DIR"
+        exit 1
+    fi
+    
+    for config in $SERVICES_CONFIG; do
+        service="${config%:*}"
+        if ! run_tests_for_service "$service"; then
+            failed=1
+        fi
+    done
+    
+
+    echo ""
+    echo "========================================="
+    if [ $failed -eq 0 ]; then
+        printf "✓ ALL SERVICES PASSED\n"
+        exit 0
+    else
+        printf "✗ SOME SERVICES FAILED\n"
+        exit 1
+    fi
+}
+main

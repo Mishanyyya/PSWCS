@@ -1,6 +1,5 @@
 FROM python:3.11-slim
 
-# Системные зависимости
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
     libpq-dev \
@@ -8,14 +7,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /app
 
-# Копируем зависимости и устанавливаем их
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Копируем исходный код
 COPY . .
 
-# Создаём непривилегированного пользователя
 RUN adduser --disabled-password --gecos "" appuser && chown -R appuser /app
 USER appuser
 

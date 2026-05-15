@@ -1,0 +1,27 @@
+#!/usr/bin/env sh
+
+set -eu
+
+COMMIT_MSG_FILE="$1"
+COMMIT_MSG="$(cat "$COMMIT_MSG_FILE")"
+
+
+# пропускаем merge/revert
+case "$COMMIT_MSG" in
+  Merge*|Revert*)
+    exit 0
+    ;;
+esac
+
+PATTERN='^(feat|fix|docs|style|refactor|perf|test|chore|ci|build)(\([a-z0-9_-]+\))?: .{3,}$'
+
+if ! printf "%s" "$COMMIT_MSG" | grep -Eq "$PATTERN"; then
+  printf "\nERROR: invalid commit message format\n\n"
+  printf "Format:\n  <type>(<scope>): <message>\n\n"
+  printf "Types:\n"
+  printf "  feat fix docs style refactor perf test chore ci build\n\n"
+  printf "Your commit:\n  %s\n\n" "$COMMIT_MSG"
+  exit 1
+fi
+
+exit 0

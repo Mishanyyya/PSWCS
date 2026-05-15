@@ -30,4 +30,4 @@ class Settings:
 settings = Settings()
 
 
-# ЭТО КОНФИГ
+# ЭТО КОНФИГ АЛЁ
